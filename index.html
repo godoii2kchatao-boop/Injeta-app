@@ -1,0 +1,681 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Injeta App</title>
+<meta name="description" content="Injeta App conecta empresas, fornecedores, clientes e profissionais da injeção de plásticos. Matéria-prima, injetoras, ferramentarias, profissionais e EPIs, com contato direto pelo WhatsApp.">
+<meta name="theme-color" content="#071b3d">
+<meta property="og:title" content="Injeta App">
+<meta property="og:description" content="Injeta App conecta empresas, fornecedores, clientes e profissionais da injeção de plásticos. Matéria-prima, injetoras, ferramentarias, profissionais e EPIs, com contato direto pelo WhatsApp.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="icon-512.png">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Injeta App">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Manrope:wght@400;500;600;700;800&display=swap">
+<style>
+:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{background:var(--bg)}
+body{margin:0}
+img{max-width:100%}
+[hidden]{display:none!important}
+
+/* Layout: app shell de chão de fábrica. Painel azul-marinho com a injetora em ciclo no topo,
+   grade de categorias logo abaixo, lista de anúncios; barra de abas embaixo no celular. */
+:root{
+  --bg:#edf1f7; --surface:#ffffff; --surface-2:#f5f8fc; --ink:#0c1f3f; --muted:#56678a; --line:#d3dcea;
+  --navy:#0b2a5b; --navy-deep:#071b3d; --on-navy:#ffffff; --on-navy-muted:#b9c8e4;
+  --green:#12a36a; --green-ink:#0a7a4e; --green-soft:#dff5eb;
+  --orange:#f08418; --orange-ink:#a85400; --orange-soft:#fdebd6;
+  --danger:#c0392b; --shadow:0 10px 30px rgba(11,42,91,.12);
+  --m-body:#f3f6fb; --m-shade:#c9d3e3; --m-dark:#1b2b4a; --m-steel:#8b9bb8;
+  --display:"Barlow Condensed","Arial Narrow",Impact,sans-serif;
+  --body:"Manrope",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --r:18px;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#06132a; --surface:#0e2145; --surface-2:#0a1a38; --ink:#e9eff9; --muted:#9db0cf; --line:#213a6b;
+  --navy:#0d2c61; --navy-deep:#06132a; --on-navy:#ffffff; --on-navy-muted:#b9c8e4;
+  --green:#22b67a; --green-ink:#56dba4; --green-soft:#0f3a32;
+  --orange:#f59331; --orange-ink:#ffb86b; --orange-soft:#3d2a14;
+  --danger:#ff8273; --shadow:0 10px 30px rgba(0,0,0,.4); color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#06132a; --surface:#0e2145; --surface-2:#0a1a38; --ink:#e9eff9; --muted:#9db0cf; --line:#213a6b;
+  --navy:#0d2c61; --navy-deep:#06132a; --on-navy:#ffffff; --on-navy-muted:#b9c8e4;
+  --green:#22b67a; --green-ink:#56dba4; --green-soft:#0f3a32;
+  --orange:#f59331; --orange-ink:#ffb86b; --orange-soft:#3d2a14;
+  --danger:#ff8273; --shadow:0 10px 30px rgba(0,0,0,.4); color-scheme:dark }
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.5;
+  padding-bottom:calc(84px + env(safe-area-inset-bottom,0px))}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--navy-deep)}
+h1,h2,h3,p{margin:0}
+h1,h2,h3{text-wrap:balance}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--orange);outline-offset:2px;border-radius:6px}
+.wrap{max-width:1080px;margin-inline:auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+
+/* Cabeçalho */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--navy-deep);color:var(--on-navy)}
+.top .wrap{display:flex;align-items:center;gap:16px;padding-block:10px}
+.brand{display:flex;align-items:center;gap:10px;background:none;border:0;color:inherit;padding:0}
+.brand-mark{width:34px;height:34px;border-radius:10px;background:var(--green);display:grid;place-items:center}
+.brand-mark svg{width:20px;height:20px}
+.brand-name{font-family:var(--display);font-weight:700;font-size:24px;letter-spacing:.06em;text-transform:uppercase}
+.topnav{margin-left:auto;display:none;gap:4px}
+.topnav button{background:none;border:0;color:var(--on-navy-muted);padding:8px 14px;border-radius:999px;font-weight:600}
+.topnav button[aria-current="page"]{background:rgba(255,255,255,.12);color:var(--on-navy)}
+.topnav button.cta{background:var(--orange);color:#1c1000}
+.me-chip{margin-left:auto;background:rgba(255,255,255,.1);border:0;color:var(--on-navy);border-radius:999px;padding:6px 12px;font-weight:600;font-size:13px;max-width:46vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+.tabs-row{max-width:1080px;margin-inline:auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.tabs{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tabs button{flex:none;background:none;border:0;border-bottom:3px solid transparent;color:var(--on-navy-muted);font-weight:700;font-size:13.500px;padding:8px 10px 9px;white-space:nowrap;transition:color .15s,border-color .2s}
+.tabs button[aria-selected="true"]{color:var(--on-navy);border-bottom-color:#5fe0aa}
+.central{display:flex;flex-wrap:wrap;gap:14px 24px;align-items:center;justify-content:space-between;background:var(--green-soft);border:1px solid var(--green);border-radius:var(--r);padding:16px;margin-top:16px}
+.central-txt{display:grid;gap:2px;flex:1 1 260px;min-width:0}
+.central-txt b{font-size:17px}
+.central-txt span:last-child{color:var(--muted);font-size:13.500px}
+.central-act{display:grid;gap:8px;justify-items:start}
+.central .phone{font-size:22px;font-weight:800;font-variant-numeric:tabular-nums;user-select:all}
+.central .acts{display:flex;flex-wrap:wrap;gap:8px}
+.central a.btn{text-decoration:none;display:inline-block}
+.central-none{font-weight:700;color:var(--muted)}
+.central-form{display:grid;gap:10px;flex:1 1 100%;max-width:420px}
+.central-form input{background:var(--surface)}
+/* Herói */
+.hero{background:linear-gradient(180deg,var(--navy-deep),var(--navy));color:var(--on-navy);position:relative;overflow:hidden;border-radius:0 0 28px 28px}
+.hero::before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.05) 1px,transparent 1px);background-size:36px 36px;mask-image:linear-gradient(180deg,#000,transparent 85%);-webkit-mask-image:linear-gradient(180deg,#000,transparent 85%)}
+.hero .wrap{position:relative;display:grid;gap:20px;padding-block:24px 56px;align-items:center}
+.eyebrow{font-family:var(--display);font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--green-ink);font-size:15px}
+.hero .eyebrow{color:#5fe0aa}
+.hero h1{font-family:var(--display);font-weight:700;text-transform:uppercase;font-size:clamp(34px,7vw,58px);line-height:.98;letter-spacing:.01em;margin-top:6px}
+.hero h1 em{font-style:normal;color:#5fe0aa}
+.hero p.lead{color:var(--on-navy-muted);max-width:46ch;margin-top:12px}
+.machine{width:100%;max-width:520px;justify-self:center}
+.machine svg{display:block;width:100%;height:auto}
+
+.search{position:relative;z-index:2;margin-top:-30px}
+.searchbox{display:flex;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:6px 6px 6px 18px;box-shadow:var(--shadow);align-items:center}
+.searchbox input{flex:1;min-width:0;border:0;background:none;outline:0;padding:10px 0}
+.searchbox button{border:0;border-radius:999px;background:var(--navy);color:var(--on-navy);width:44px;height:44px;display:grid;place-items:center;flex:none}
+.searchbox button svg{width:20px;height:20px}
+
+/* Seções */
+section{margin-top:28px}
+.sec-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:12px}
+.sec-head h2{font-family:var(--display);font-weight:700;text-transform:uppercase;letter-spacing:.04em;font-size:24px}
+.link{background:none;border:0;color:var(--green-ink);font-weight:700;padding:4px 0}
+
+.cats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.cat{position:relative;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;display:flex;flex-direction:column;gap:10px;min-width:0;
+  transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease;animation:rise .5s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i)*60ms)}
+.cat:hover{transform:translateY(-3px);box-shadow:var(--shadow);border-color:var(--green)}
+.cat:active{transform:scale(.97)}
+.cat-ico{width:52px;height:52px;border-radius:50%;background:var(--green);display:grid;place-items:center;transition:transform .35s cubic-bezier(.3,1.6,.5,1)}
+.cat:hover .cat-ico{transform:rotate(-8deg) scale(1.08)}
+.cat-ico svg,.nav svg,.brand-mark svg{fill:none;stroke:#fff;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.cat-ico svg{width:28px;height:28px}
+.cat b{font-size:15.500px;font-weight:800;line-height:1.2}
+.cat small{color:var(--muted);font-size:12.500px;line-height:1.35}
+.cat .count{position:absolute;top:14px;right:14px;font-size:12px;font-weight:700;color:var(--muted);font-variant-numeric:tabular-nums}
+
+/* Anúncios */
+.list{display:grid;gap:12px;grid-template-columns:minmax(0,1fr)}
+.ad{text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;display:flex;flex-direction:column;gap:6px;min-width:0;
+  transition:transform .2s ease,box-shadow .2s ease;animation:rise .45s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i)*45ms)}
+.ad:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+.ad-top{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.pill{font-size:11.500px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;border-radius:999px;padding:3px 9px}
+.pill.of{background:var(--green-soft);color:var(--green-ink)}
+.pill.pr{background:var(--orange-soft);color:var(--orange-ink)}
+.pill.ex{background:none;border:1px dashed var(--line);color:var(--muted)}
+.pill.mine{background:var(--navy);color:var(--on-navy)}
+.ad .sub{font-size:12.500px;color:var(--muted);font-weight:600}
+.ad h3{font-size:16px;font-weight:800;line-height:1.25;overflow-wrap:anywhere}
+.ad p{color:var(--muted);font-size:13.500px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:anywhere}
+.ad-foot{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;font-size:13px;font-weight:600;margin-top:2px}
+.ad-foot .price{color:var(--green-ink);font-variant-numeric:tabular-nums}
+.empty{border:1px dashed var(--line);border-radius:var(--r);padding:28px 18px;text-align:center;color:var(--muted)}
+.empty b{display:block;color:var(--ink);margin-bottom:4px}
+
+.chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:7px 14px;font-weight:600;font-size:13.500px;transition:background .15s,color .15s,transform .15s}
+.chip:active{transform:scale(.95)}
+.chip[aria-pressed="true"]{background:var(--navy);border-color:var(--navy);color:var(--on-navy)}
+.filters{display:grid;gap:10px;margin-block:14px}
+.page-title{font-family:var(--display);font-weight:700;text-transform:uppercase;font-size:32px;letter-spacing:.03em;line-height:1.05;margin-top:22px}
+.page-sub{color:var(--muted);margin-top:4px;max-width:60ch}
+
+/* Passos */
+.steps{display:grid;gap:12px;counter-reset:s}
+.step{display:flex;gap:14px;align-items:flex-start;background:var(--surface-2);border-radius:var(--r);padding:16px}
+.step::before{counter-increment:s;content:counter(s);font-family:var(--display);font-weight:700;font-size:28px;line-height:1;color:var(--green-ink);width:22px;flex:none}
+.step b{display:block}
+.step span{color:var(--muted);font-size:13.500px}
+
+/* Formulários */
+.form{display:grid;gap:14px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px;margin-top:16px;max-width:640px}
+.field{display:grid;gap:6px;min-width:0}
+.field label,.field legend{font-weight:700;font-size:13.500px}
+.field small{color:var(--muted);font-size:12.500px}
+.field input,.field select,.field textarea{width:100%;border:1px solid var(--line);background:var(--surface-2);border-radius:12px;padding:11px 12px}
+.field textarea{min-height:110px;resize:vertical}
+.row2{display:grid;grid-template-columns:minmax(0,1fr) 96px;gap:10px}
+fieldset{border:0;padding:0;margin:0}
+.seg{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.seg label{flex:1 1 120px;position:relative}
+.seg input{position:absolute;opacity:0;inset:0;width:100%;height:100%;margin:0;cursor:pointer}
+.seg span{display:block;text-align:center;border:1px solid var(--line);background:var(--surface-2);border-radius:12px;padding:10px 8px;font-weight:700;font-size:13.500px;transition:background .15s,color .15s,border-color .15s}
+.seg input:checked + span{background:var(--green);border-color:var(--green);color:#fff}
+.seg input:focus-visible + span{outline:3px solid var(--orange);outline-offset:2px}
+.btn{border:0;border-radius:14px;padding:13px 18px;font-weight:800;background:var(--orange);color:#1c1000;transition:transform .15s,filter .15s}
+.btn:hover{filter:brightness(1.06)}
+.btn:active{transform:scale(.97)}
+.btn.ghost{background:none;border:1px solid var(--line);color:var(--ink)}
+.btn.green{background:var(--green);color:#fff}
+.btn.small{padding:8px 12px;border-radius:10px;font-size:13px}
+.btn.danger{background:none;border:1px solid var(--danger);color:var(--danger)}
+.err{color:var(--danger);font-weight:600;font-size:13.500px}
+.status{display:flex;gap:10px;align-items:flex-start;background:var(--surface-2);border-radius:14px;padding:12px 14px;font-size:13.500px;color:var(--muted);margin-top:14px;max-width:640px}
+.status i{width:10px;height:10px;border-radius:50%;background:var(--orange);flex:none;margin-top:5px}
+.status.on i{background:var(--green);animation:pulse 2s infinite}
+.profile-card{display:flex;gap:14px;align-items:center;background:var(--navy);color:var(--on-navy);border-radius:var(--r);padding:18px;margin-top:16px;max-width:640px}
+.avatar{width:54px;height:54px;border-radius:50%;background:var(--green);display:grid;place-items:center;font-family:var(--display);font-weight:700;font-size:24px;flex:none}
+.profile-card div{min-width:0;flex:1}
+.profile-card b{display:block;font-size:17px;overflow-wrap:anywhere}
+.profile-card span{color:var(--on-navy-muted);font-size:13.500px}
+.mine-row{display:flex;gap:8px;justify-content:flex-end;margin-top:6px}
+
+/* Barra de abas */
+.nav{position:fixed;left:0;right:0;bottom:0;z-index:25;background:var(--surface);border-top:1px solid var(--line);
+  padding:6px max(16px,env(safe-area-inset-right,0px)) calc(6px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));
+  display:grid;grid-template-columns:repeat(4,1fr);gap:4px}
+.nav button{background:none;border:0;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 0;font-size:11.500px;font-weight:700;color:var(--muted);border-radius:12px;transition:color .15s}
+.nav svg{width:24px;height:24px;stroke:currentColor;transition:transform .3s cubic-bezier(.3,1.6,.5,1)}
+.nav button[aria-current="page"]{color:var(--green-ink)}
+.nav button[aria-current="page"] svg{transform:translateY(-2px) scale(1.12)}
+.nav button.plus svg{background:var(--orange);stroke:#1c1000;border-radius:50%;padding:4px;width:30px;height:30px;margin-top:-4px}
+
+/* Folha de detalhe */
+.sheet-wrap{position:fixed;inset:0;z-index:40;background:rgba(4,12,28,.55);display:flex;align-items:flex-end;justify-content:center;animation:fade .2s both}
+.sheet{background:var(--surface);width:100%;max-width:560px;max-height:88%;overflow:auto;border-radius:24px 24px 0 0;
+  padding:20px max(18px,env(safe-area-inset-right,0px)) calc(22px + env(safe-area-inset-bottom,0px)) max(18px,env(safe-area-inset-left,0px));
+  display:grid;gap:12px;animation:up .32s cubic-bezier(.2,.9,.2,1) both}
+.sheet h3{font-size:20px;font-weight:800;line-height:1.2;overflow-wrap:anywhere}
+.sheet .desc{white-space:pre-wrap;overflow-wrap:anywhere}
+.kv{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 14px;font-size:14px}
+.kv dt{color:var(--muted)}
+.kv dd{margin:0;font-weight:600;overflow-wrap:anywhere}
+.contact{background:var(--surface-2);border-radius:14px;padding:14px;display:grid;gap:10px}
+.contact .phone{font-size:20px;font-weight:800;font-variant-numeric:tabular-nums;user-select:all}
+.contact .acts{display:flex;flex-wrap:wrap;gap:8px}
+.contact a.btn{text-decoration:none;display:inline-block}
+.sheet-close{justify-self:end;background:var(--surface-2);border:0;border-radius:50%;width:36px;height:36px;font-size:18px;line-height:1}
+
+.toast{position:fixed;left:50%;bottom:calc(96px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:50;background:var(--navy-deep);color:var(--on-navy);border:1px solid var(--line);padding:10px 16px;border-radius:999px;font-weight:700;font-size:13.500px;box-shadow:var(--shadow);animation:toast 3.2s both;max-width:calc(100% - 32px);text-align:center}
+
+#view{animation:view .35s cubic-bezier(.2,.8,.2,1) both}
+
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes view{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+@keyframes up{from{transform:translateY(100%)}to{transform:none}}
+@keyframes toast{0%{opacity:0;transform:translate(-50%,12px)}8%,88%{opacity:1;transform:translate(-50%,0)}100%{opacity:0;transform:translate(-50%,8px)}}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(18,163,106,.5)}100%{box-shadow:0 0 0 10px rgba(18,163,106,0)}}
+
+/* Ciclo da injetora: fecha, injeta, abre, extrai (5 s) */
+.mv-mold{animation:mold 5s ease-in-out infinite}
+.mv-screw{animation:screw 5s ease-in-out infinite}
+.mv-part{animation:part 5s linear infinite}
+.mv-thread{animation:thread .6s linear infinite}
+.mv-belt{animation:belt .8s linear infinite}
+.mv-pellet{animation:pellet 1.4s linear infinite}
+.mv-pellet.b{animation-delay:-.5s}.mv-pellet.c{animation-delay:-.95s}
+.mv-heat{animation:heat 5s ease-in-out infinite}
+.mv-led{animation:led 1s steps(2) infinite}
+@keyframes mold{0%,6%{transform:translateX(-44px)}18%,62%{transform:none}76%,100%{transform:translateX(-44px)}}
+@keyframes screw{0%,20%{transform:none}38%,55%{transform:translateX(-12px)}75%,100%{transform:none}}
+@keyframes part{0%,74%{opacity:0;transform:none}76%{opacity:1;transform:none}86%{opacity:1;transform:translateY(74px)}100%{opacity:0;transform:translate(-90px,74px)}}
+@keyframes thread{to{stroke-dashoffset:-16}}
+@keyframes belt{to{stroke-dashoffset:16}}
+@keyframes pellet{0%{transform:translateY(-14px);opacity:0}20%{opacity:1}100%{transform:translateY(34px);opacity:0}}
+@keyframes heat{0%,20%{opacity:.55}40%,60%{opacity:1}100%{opacity:.55}}
+@keyframes led{50%{opacity:.25}}
+
+@media (min-width:720px){
+  .cats{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .list{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .steps{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .hero .wrap{grid-template-columns:1.050fr 1fr;padding-block:36px 68px}
+  .search{max-width:680px}
+}
+@media (min-width:900px){
+  body{padding-bottom:40px}
+  .nav{display:none}
+  .topnav{display:flex}
+  .me-chip{margin-left:0}
+  .toast{bottom:32px}
+  .sheet-wrap{align-items:center}
+  .sheet{border-radius:24px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .mv-part{opacity:0}
+}
+.nav{grid-template-columns:repeat(3,1fr)}
+.nav a{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 0;font-size:11.500px;font-weight:700;color:var(--green-ink);text-decoration:none;border-radius:12px}
+.nav a svg{background:var(--green);stroke:#fff;border-radius:50%;padding:5px;width:30px;height:30px;margin-top:-4px}
+.topnav a.cta{background:var(--green);color:#fff;padding:8px 14px;border-radius:999px;font-weight:700;text-decoration:none}
+.items{display:grid;gap:12px;grid-template-columns:minmax(0,1fr)}
+.item{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;text-decoration:none;color:inherit;min-width:0;cursor:pointer;
+  transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease;animation:rise .45s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i)*50ms)}
+.item:hover{transform:translateY(-2px);box-shadow:var(--shadow);border-color:var(--green)}
+.item:active{transform:scale(.98)}
+.item-txt{flex:1 1 180px;min-width:0;display:grid;gap:2px}
+.item-txt b{font-size:15.500px;font-weight:800;line-height:1.25}
+.item-txt small{color:var(--muted);font-size:13px}
+.item-txt .sub{font-size:11.500px;font-weight:800;color:var(--green-ink);text-transform:uppercase;letter-spacing:.05em}
+.item-go{flex:none;display:inline-flex;align-items:center;gap:6px;background:var(--green);color:#fff;border-radius:999px;padding:8px 13px;font-weight:800;font-size:13px}
+.item-go svg{width:16px;height:16px}
+.group + .group{margin-top:26px}
+.group:first-child{margin-top:0}
+@media (min-width:720px){.items{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.nav{grid-template-columns:repeat(4,1fr)}
+.item{cursor:default}
+.item-acts{display:flex;flex-wrap:wrap;gap:8px;flex:none}
+.item-acts button{border:0;border-radius:999px;padding:9px 14px;font-weight:800;font-size:13px;transition:transform .15s,filter .15s}
+.item-acts button:hover{filter:brightness(1.07)}
+.item-acts button:active{transform:scale(.95)}
+.b-need{background:var(--green);color:#fff}
+.b-offer{background:var(--surface-2);box-shadow:inset 0 0 0 1.500px var(--muted);color:var(--ink)}
+.checks{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.checks label{position:relative}
+.checks input{position:absolute;opacity:0;inset:0;width:100%;height:100%;margin:0;cursor:pointer}
+.checks span{display:block;border:1px solid var(--line);background:var(--surface-2);border-radius:999px;padding:7px 12px;font-weight:600;font-size:13px}
+.checks input:checked + span{background:var(--navy);border-color:var(--navy);color:var(--on-navy)}
+.checks input:focus-visible + span{outline:3px solid var(--orange);outline-offset:2px}
+.sheet form{display:grid;gap:12px}
+.sheet a.btn,.form a.btn{text-decoration:none;text-align:center;display:block}
+.hint{color:var(--muted);font-size:12.500px}
+.partner{display:flex;flex-wrap:wrap;gap:12px 20px;align-items:center;justify-content:space-between;background:var(--navy);color:var(--on-navy);border-radius:var(--r);padding:18px;margin-top:28px}
+.partner div{flex:1 1 240px;min-width:0;display:grid;gap:2px}
+.partner b{font-size:17px}
+.partner span{color:var(--on-navy-muted);font-size:13.500px}
+.plist{display:grid;gap:10px}
+.pcard{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 14px;display:grid;gap:2px;overflow-wrap:anywhere}
+.pcard small{color:var(--muted)}
+.foot{margin-top:40px;border-top:1px solid var(--line)}
+.foot .wrap{display:flex;flex-wrap:wrap;gap:8px 20px;justify-content:space-between;padding-block:20px;color:var(--muted);font-size:13px}
+.linklike{background:none;border:0;padding:0;color:var(--green-ink);font-weight:700;text-decoration:underline;font-size:inherit}
+.consent{display:flex;gap:10px;align-items:flex-start;font-size:13px;line-height:1.45}
+.consent input{width:20px;height:20px;margin:1px 0 0;flex:none;accent-color:var(--green)}
+.legal{max-width:68ch;padding-bottom:8px}
+.legal h2{font-family:var(--display);font-weight:700;text-transform:uppercase;letter-spacing:.03em;font-size:21px;margin-top:26px}
+.legal p,.legal li{margin-top:8px}
+.legal ul{margin:0;padding-left:20px}
+.legal .meta{color:var(--muted);font-size:13px}
+</style>
+</head>
+<body><header class="top">
+  <div class="wrap">
+    <button class="brand" data-go="inicio" aria-label="Injeta App, início">
+      <span class="brand-mark"><svg viewBox="0 0 24 24"><path d="M2 17h20v3H2zM4 17v-6h7v6M11 13h8v4M14 13V9h4v4M13 6h6l-1.500 3h-3z"/></svg></span>
+      <span class="brand-name">Injeta App</span>
+    </button>
+    <nav class="topnav" aria-label="Principal">
+      <button data-go="inicio">Início</button>
+      <button data-go="buscar">Todos os tópicos</button>
+      <button data-go="parceiro">Seja parceiro</button>
+      <a class="cta" data-wa="Olá! Vim pelo Injeta App." target="_blank" rel="noopener">Falar no WhatsApp</a>
+    </nav>
+  </div>
+  <div class="tabs-row"><div class="tabs" id="tabs" role="tablist" aria-label="Tópicos"></div></div>
+</header>
+
+<main id="view"></main>
+<footer class="foot"><div class="wrap"><span>© 2026 Injeta App. Todos os direitos reservados.</span><span><button class="linklike" data-go="privacidade">Política de Privacidade</button> · <button class="linklike" data-go="termos">Termos de Uso</button></span></div></footer>
+
+<nav class="nav" aria-label="Abas">
+  <button data-go="inicio"><svg viewBox="0 0 24 24"><path d="M3 11l9-7 9 7v9h-6v-6H9v6H3z"/></svg>Início</button>
+  <button data-go="buscar"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg>Tópicos</button>
+  <button data-go="parceiro"><svg viewBox="0 0 24 24"><circle cx="10" cy="8" r="4"/><path d="M2 21c1-4 4-6 8-6s7 2 8 6M19 4v6M16 7h6"/></svg>Parceiro</button>
+  <a data-wa="Olá! Vim pelo Injeta App." target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M4 20l1.300-4A8 8 0 1 1 8 18.700z"/></svg>WhatsApp</a>
+</nav>
+
+<div class="sheet-wrap" id="sheetWrap" hidden><div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-label="Pedido de contato"></div></div>
+<div id="toastHost" aria-live="polite"></div>
+
+<script>
+(function(){
+"use strict";
+const $=(s,r)=>(r||document).querySelector(s);
+const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const str=(v,n)=>String(v==null?"":v).slice(0,n);
+const fold=s=>String(s||"").normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase();
+
+const CATS=[
+ {id:"empresas",nome:"Empresas de injeção",desc:"Indústrias que injetam peças plásticas",
+  itens:[["Injeção sob encomenda","Empresas com máquinas disponíveis para injetar suas peças."],
+         ["Peças técnicas","Injeção de peças de engenharia com medidas apertadas."],
+         ["Montagem e acabamento","Montagem, rebarbação e embalagem de peças injetadas."]],
+  ico:'<path d="M4 21V9l6-3v15M10 21V4l10 4v13M2 21h20M14 11h2M14 15h2M6.500 12h1M6.500 16h1"/>'},
+ {id:"materia",nome:"Matéria-prima",desc:"Fornecedores de resinas para injeção",
+  itens:[["Poliacetal (POM)","Para engrenagens, buchas e peças de precisão."],
+         ["Polietileno (PE)","Alta e baixa densidade para utilidades e embalagens."],
+         ["Nylon (PA)","Natural ou com fibra de vidro para peças resistentes."],
+         ["PS cristal","Transparente, para embalagens e descartáveis."],
+         ["ABS","Para peças com bom acabamento e resistência a impacto."],
+         ["Polipropileno (PP)","A resina mais usada em utilidades, tampas e peças gerais."],
+         ["Masterbatch e pigmentos","Cor e aditivos para misturar à resina."],
+         ["Material reciclado","Resinas recuperadas e moídas para reduzir custo."]],
+  ico:'<circle cx="7" cy="8" r="2.500"/><circle cx="16" cy="7" r="2.500"/><circle cx="12" cy="14" r="2.500"/><circle cx="6" cy="18" r="2"/><circle cx="18" cy="17" r="2.500"/>'},
+ {id:"maquinas",nome:"Injetoras e periféricos",desc:"Compra e venda de máquinas e periféricos",
+  itens:[["Injetoras plásticas","Compra e venda de injetoras novas e usadas."],
+         ["Manutenção de injetoras","Assistência técnica mecânica, hidráulica e elétrica."],
+         ["Esteiras","Esteiras transportadoras para a saída de peças."],
+         ["Moinhos","Moinhos para reaproveitar galhos e refugo."],
+         ["Separadores de peça","Separam peças e galhos na saída da máquina."],
+         ["Secadores e desumidificadores","Tiram a umidade da resina antes da injeção."],
+         ["Chillers e torres de resfriamento","Água gelada para o molde e para a máquina."],
+         ["Robôs e manipuladores","Retirada automática de peças do molde."]],
+  ico:'<path d="M2 17h20v3H2zM4 17v-6h7v6M11 13h8v4M14 13V9h4v4M13 6h6l-1.500 3h-3z"/>'},
+ {id:"ferramentaria",nome:"Ferramentarias",desc:"Prestadores de serviço em moldes",
+  itens:[["Construção de moldes","Projeto e fabricação de moldes de injeção."],
+         ["Manutenção e reparo de moldes","Conserto, polimento e troca de componentes."],
+         ["Ajuste e try-out de moldes","Teste do molde na máquina e ajustes finais."]],
+  ico:'<path d="M14.500 6.500a4 4 0 0 0-5.300 5.300L3 18l3 3 6.200-6.200a4 4 0 0 0 5.300-5.300l-2.600 2.600-2.400-.6-.6-2.400z"/>'},
+ {id:"profissionais",nome:"Profissionais",desc:"Mão de obra do ramo de injeção",
+  itens:[["Técnico em plásticos","Processo, qualidade e solução de defeitos de injeção."],
+         ["Preparador e regulador de injetoras","Troca de molde e regulagem da máquina."],
+         ["Operador de injetora","Operação da máquina e conferência das peças."],
+         ["Líder de produção","Coordenação do turno e da equipe de produção."]],
+  ico:'<path d="M6 10a6 6 0 0 1 12 0M4.500 10h15M8 10v1a4 4 0 0 0 8 0v-1M4 21c1-4 4-5.500 8-5.500s7 1.500 8 5.500"/>'},
+ {id:"epi",nome:"EPIs e segurança",desc:"Fornecedores de EPIs e consultoria",
+  itens:[["Uniformes","Uniformes profissionais para a produção."],
+         ["Protetores auriculares","Proteção contra o ruído das máquinas."],
+         ["Luvas","Luvas para manuseio de peças e moldes."],
+         ["Capacetes","Proteção para a cabeça no chão de fábrica."],
+         ["Óculos de proteção","Proteção dos olhos contra respingos e partículas."],
+         ["Calçados de segurança","Botinas com biqueira para a produção."],
+         ["Consultoria em segurança do trabalho","Profissionais que orientam e adequam sua empresa."]],
+  ico:'<path d="M3 16a9 9 0 0 1 18 0M2 16h20v2.500H2zM10 7.300V11M14 7.300V11"/>'}
+];
+const CAT=Object.fromEntries(CATS.map(c=>[c.id,c]));
+const BTN={_:["Preciso","Forneço"],maquinas:["Quero comprar","Quero vender"],profissionais:["Quero contratar","Sou profissional"],ferramentaria:["Preciso","Presto serviço"],empresas:["Preciso","Presto serviço"]};
+const PT={fornecedor:"Fornecedor",prestador:"Prestador de serviço",profissional:"Profissional"};
+const LEAD={};
+const ROUTES=["inicio","buscar","parceiro","privacidade","termos"];
+/* Dados do responsável legal: preencher antes de publicar */
+const RESP={nome:"Giovan Almeida da Fonseca",doc:"",email:"giovan7fonseca@gmail.com"};
+const VIGENCIA="16 de novembro de 2026";
+function btnFor(cid,item){return /^Manuten/.test(item)?["Preciso","Presto serviço"]:(BTN[cid]||BTN._);}
+const S={route:"inicio",cat:"",q:"",central:{fone:"(19) 99462-2691"},owner:false,db:null,uid:null,parceiros:[]};
+const WA_ICO='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l1.300-4A8 8 0 1 1 8 18.700z"/></svg>';
+const SEARCH_ICO='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="6.500"/><path d="M16 16l5 5"/></svg>';
+const MSG0="Olá! Vim pelo Injeta App.";
+
+function toast(msg){const h=$("#toastHost");h.innerHTML="";const d=document.createElement("div");d.className="toast";d.textContent=msg;h.appendChild(d);setTimeout(()=>{if(d.parentNode)d.remove();},3300);}
+function waLink(msg){const d=(S.central.fone||"").replace(/\D/g,"");return d.length<10?"":"https://wa.me/"+(d.length<=11?"55":"")+d+"?text="+encodeURIComponent(msg);}
+function paintWa(){document.querySelectorAll("a[data-wa]").forEach(a=>{const l=waLink(a.dataset.wa);if(l)a.href=l;else a.removeAttribute("href");});}
+function tabs(){
+  const act=S.route==="inicio"?"inicio":S.route==="buscar"?(S.cat||"todos"):"";
+  const el=$("#tabs"),left=el.scrollLeft;
+  el.innerHTML=[["inicio","Início"],["todos","Todos"]].concat(CATS.map(c=>[c.id,c.nome])).map(([k,n])=>`<button role="tab" data-tab="${k}" aria-selected="${k===act}">${n}</button>`).join("");
+  el.scrollLeft=left;
+  const a=$('[aria-selected="true"]',el);
+  if(a){const l=a.offsetLeft-el.offsetLeft;if(l<el.scrollLeft||l+a.offsetWidth>el.scrollLeft+el.clientWidth)el.scrollLeft=Math.max(0,l-40);}
+}
+function centralInner(edit){
+  const f=S.central.fone;
+  if(edit)return `<form id="fCentral" class="central-form" novalidate><div class="field"><label for="cFone">WhatsApp da central, com DDD</label><input id="cFone" inputmode="tel" maxlength="20" value="${esc(f)}" placeholder="(11) 90000-0000"><small>Este número recebe os contatos de todas as abas.</small></div><p class="err" id="cErr" hidden></p><button class="btn green small">Salvar número</button></form>`;
+  const msg="Olá! Vim pelo Injeta App"+(S.route==="buscar"&&S.cat?" e preciso de contato em "+CAT[S.cat].nome:"")+".";
+  return `<div class="central-txt"><span class="eyebrow">Central Injeta App</span><b>A central faz a ponte</b><span>Não achou o que precisa na lista? Chame no WhatsApp e a central conecta você a empresas, fornecedores, clientes e prestadores de serviço.</span></div>
+    <div class="central-act">${f?`<span class="phone">${esc(f)}</span><div class="acts"><a class="btn green small" data-wa="${esc(msg)}" target="_blank" rel="noopener">Abrir no WhatsApp</a><button class="btn ghost small" data-copy="${esc(f)}">Copiar número</button></div>`:`<span class="central-none">WhatsApp da central ainda não definido.</span>`}${S.owner?`<button class="btn ghost small" id="editCentral">${f?"Alterar número":"Definir WhatsApp da central"}</button>`:""}</div>`;
+}
+function itemHtml(c,it,i,showCat){
+  const b=btnFor(c.id,it[0]);
+  return `<div class="item" style="--i:${Math.min(i,10)}">
+    <span class="item-txt">${showCat?`<span class="sub">${c.nome}</span>`:""}<b>${it[0]}</b><small>${it[1]}</small></span>
+    <span class="item-acts"><button class="b-need" data-lead="n|${c.id}|${esc(it[0])}">${b[0]}</button><button class="b-offer" data-lead="o|${c.id}|${esc(it[0])}">${b[1]}</button></span></div>`;
+}
+function listHtml(){
+  const q=fold(S.q).trim();
+  const cats=S.cat?[CAT[S.cat]]:CATS;
+  const hit=(c,it)=>!q||fold(it[0]+" "+it[1]+" "+c.nome+" "+c.desc).includes(q);
+  const blocks=cats.map(c=>({c,its:c.itens.filter(it=>hit(c,it))})).filter(b=>b.its.length);
+  if(!blocks.length)return `<div class="empty"><b>Nada encontrado para essa busca</b>Tente outra palavra, ou chame a central no WhatsApp e diga o que você precisa.</div>`;
+  if(S.cat)return `<div class="items">${blocks[0].its.map((it,i)=>itemHtml(blocks[0].c,it,i)).join("")}</div>`;
+  return blocks.map(b=>`<section class="group"><div class="sec-head"><h2>${b.c.nome}</h2><button class="link" data-tab="${b.c.id}">Abrir aba</button></div><div class="items">${b.its.map((it,i)=>itemHtml(b.c,it,i)).join("")}</div></section>`).join("");
+}
+const MACHINE=`<svg viewBox="0 0 520 230" role="img" aria-label="Injetora de plástico em ciclo: fecha o molde, injeta, abre e extrai a peça">
+ <rect x="16" y="150" width="488" height="44" rx="6" fill="var(--m-dark)"/>
+ <rect x="16" y="150" width="488" height="8" rx="4" fill="var(--m-steel)" opacity=".5"/>
+ <rect x="28" y="72" width="116" height="78" rx="8" fill="var(--m-body)"/>
+ <rect x="28" y="128" width="116" height="22" fill="var(--m-shade)"/>
+ <rect x="42" y="86" width="44" height="30" rx="4" fill="var(--m-dark)"/>
+ <path d="M48 108l8-9 7 5 9-12 8 6" fill="none" stroke="#5fe0aa" stroke-width="2"/>
+ <circle class="mv-led" cx="100" cy="92" r="4" fill="#5fe0aa"/><circle cx="114" cy="92" r="4" fill="var(--orange)"/>
+ <rect x="96" y="104" width="34" height="6" rx="3" fill="var(--m-shade)"/>
+ <rect x="144" y="80" width="124" height="5" fill="var(--m-steel)"/><rect x="144" y="134" width="124" height="5" fill="var(--m-steel)"/>
+ <rect x="266" y="66" width="14" height="84" rx="3" fill="var(--m-body)"/>
+ <rect x="240" y="88" width="26" height="44" rx="3" fill="var(--green)"/>
+ <g class="mv-mold"><rect x="144" y="106" width="56" height="8" fill="var(--m-steel)"/><rect x="200" y="66" width="14" height="84" rx="3" fill="var(--m-body)"/><rect x="214" y="88" width="26" height="44" rx="3" fill="var(--green)"/><rect x="236" y="100" width="4" height="20" fill="var(--m-dark)" opacity=".35"/></g>
+ <g class="mv-screw"><rect x="280" y="100" width="130" height="20" rx="4" fill="var(--m-steel)"/>
+  <line class="mv-thread" x1="286" y1="110" x2="404" y2="110" stroke="var(--m-dark)" stroke-width="8" stroke-dasharray="4 4" opacity=".55"/>
+  <g class="mv-heat"><rect x="296" y="96" width="10" height="28" rx="2" fill="var(--orange)"/><rect x="318" y="96" width="10" height="28" rx="2" fill="var(--orange)"/><rect x="340" y="96" width="10" height="28" rx="2" fill="var(--orange)"/></g>
+  <path d="M362 44h44l-10 34v22h-24V78z" fill="var(--green)"/><rect x="358" y="38" width="52" height="8" rx="3" fill="#5fe0aa"/>
+  <circle class="mv-pellet" cx="378" cy="60" r="3" fill="#fff"/><circle class="mv-pellet b" cx="388" cy="58" r="3" fill="#fff"/><circle class="mv-pellet c" cx="383" cy="62" r="3" fill="#fff"/>
+  <rect x="410" y="86" width="84" height="48" rx="8" fill="var(--m-body)"/><rect x="410" y="118" width="84" height="16" fill="var(--m-shade)"/><rect x="424" y="96" width="30" height="6" rx="3" fill="var(--m-shade)"/></g>
+ <rect x="296" y="134" width="12" height="16" fill="var(--m-steel)"/><rect x="440" y="134" width="12" height="16" fill="var(--m-steel)"/>
+ <line class="mv-belt" x1="60" y1="204" x2="330" y2="204" stroke="var(--m-steel)" stroke-width="6" stroke-linecap="round" stroke-dasharray="10 6"/>
+ <circle cx="60" cy="204" r="7" fill="var(--m-body)"/><circle cx="330" cy="204" r="7" fill="var(--m-body)"/>
+ <g class="mv-part"><rect x="222" y="104" width="26" height="16" rx="5" fill="#5fe0aa"/><rect x="230" y="108" width="10" height="8" rx="2" fill="var(--navy-deep)" opacity=".35"/></g>
+</svg>`;
+
+function vInicio(){
+  return `<div class="hero"><div class="wrap">
+    <div><p class="eyebrow">Injeção de plásticos</p>
+      <h1>Quem injeta encontra <em>quem fornece</em></h1>
+      <p class="lead">Matéria-prima, injetoras, ferramentarias, profissionais e EPIs do setor em um só lugar. Escolha o que você precisa e a central faz a ponte pelo WhatsApp.</p></div>
+    <div class="machine">${MACHINE}</div>
+  </div></div>
+  <div class="wrap">
+    <form class="search" id="fHome" role="search"><div class="searchbox">
+      <input id="qHome" type="search" placeholder="Buscar serviço, máquina, resina ou profissional" aria-label="Buscar" value="${esc(S.q)}">
+      <button aria-label="Buscar">${SEARCH_ICO}</button>
+    </div></form>
+    <section><div class="sec-head"><h2>Tópicos</h2></div>
+      <div class="cats">${CATS.map((c,i)=>`<button class="cat" style="--i:${i}" data-tab="${c.id}">
+        <span class="cat-ico"><svg viewBox="0 0 24 24">${c.ico}</svg></span><b>${c.nome}</b><small>${c.desc}</small></button>`).join("")}</div></section>
+    <div class="central" id="centralBox" style="margin-top:28px">${centralInner()}</div>
+    <div class="partner"><div><b>Você fornece ou presta serviço?</b><span>Cadastre-se como parceiro e a central indica você quando alguém precisar.</span></div><button class="btn" data-go="parceiro">Quero ser parceiro</button></div>
+    <section><div class="sec-head"><h2>Como funciona</h2></div>
+      <div class="steps">
+        <div class="step"><div><b>Escolha o tópico</b><span>Abra a aba do que você procura: resina, máquina, ferramentaria, profissional ou EPI.</span></div></div>
+        <div class="step"><div><b>Diga se precisa ou fornece</b><span>Preencha seu nome e os detalhes. O WhatsApp da central abre com a mensagem pronta.</span></div></div>
+        <div class="step"><div><b>A central faz a ponte</b><span>Ela coloca você em contato com a empresa, o fornecedor ou o profissional certo.</span></div></div>
+      </div></section>
+  </div>`;
+}
+function vBuscar(){
+  const c=CAT[S.cat];
+  return `<div class="wrap"><h1 class="page-title">${c?c.nome:"Todos os tópicos"}</h1>
+    <p class="page-sub">${c?c.desc+". Diga se você precisa ou fornece e fale com a central.":"Diga se você precisa ou fornece e fale com a central no WhatsApp."}</p>
+    <div class="searchbox" style="margin-block:14px 18px"><input id="qBusca" type="search" placeholder="Filtrar por nome" aria-label="Filtrar" value="${esc(S.q)}">
+      <button aria-label="Filtrar" tabindex="-1">${SEARCH_ICO}</button></div>
+    <div id="lista">${listHtml()}</div>
+    <div class="central" id="centralBox" style="margin-top:28px">${centralInner()}</div></div>`;
+}
+function lsGet(){try{return JSON.parse(localStorage.getItem("injeta.lead")||"{}")||{};}catch(e){return {};}}
+function lsSet(v){try{localStorage.setItem("injeta.lead",JSON.stringify(v));}catch(e){}}
+function closeSheet(){$("#sheetWrap").hidden=true;}
+function openLead(key){
+  const [k,cid,item]=key.split("|"),c=CAT[cid];if(!c)return;
+  const b=btnFor(cid,item),lab=k==="o"?b[1]:b[0],me=lsGet();
+  LEAD.lab=lab;LEAD.item=item;LEAD.cat=c.nome;
+  $("#sheet").innerHTML=`<button class="sheet-close" id="sheetClose" aria-label="Fechar">✕</button>
+   <span class="ad-top"><span class="pill ${k==="o"?"pr":"of"}">${esc(lab)}</span><span class="hint">${c.nome}</span></span>
+   <h3>${esc(item)}</h3>
+   <form id="fLead" novalidate>
+    <div class="field"><label for="lNome">Seu nome</label><input id="lNome" maxlength="60" autocomplete="name" value="${esc(me.nome)}"></div>
+    <div class="field"><label for="lEmp">Empresa (opcional)</label><input id="lEmp" maxlength="60" autocomplete="organization" value="${esc(me.emp)}"></div>
+    <div class="field"><label for="lDet">Detalhes</label><textarea id="lDet" maxlength="400" placeholder="${k==="o"?"O que você oferece, capacidade, região de atendimento":"Quantidade, tonelagem, prazo, o que for importante"}"></textarea></div>
+    <label class="consent"><input type="checkbox" id="lOk"><span>Li a <button type="button" class="linklike" data-go="privacidade">Política de Privacidade</button> e autorizo o envio destes dados à central pelo WhatsApp.</span></label>
+    <p class="err" id="lErr" hidden></p>
+    <a class="btn green" id="leadSend" data-wa="" target="_blank" rel="noopener">Enviar pelo WhatsApp</a>
+    <span class="hint">Abre a conversa com a central com a mensagem pronta. É só enviar.</span>
+   </form>`;
+  $("#sheetWrap").hidden=false;syncLead();$("#sheetClose").focus();
+}
+function syncLead(){
+  const a=$("#leadSend");if(!a)return;
+  const n=$("#lNome").value.trim(),e=$("#lEmp").value.trim(),d=$("#lDet").value.trim();
+  a.dataset.wa="Olá! Vim pelo Injeta App.\n*"+LEAD.lab+":* "+LEAD.item+" ("+LEAD.cat+")\nNome: "+n+(e?"\nEmpresa: "+e:"")+(d?"\nDetalhes: "+d:"");
+  paintWa();
+}
+function partData(){return {tipo:($("input[name=ptipo]:checked")||{}).value||"fornecedor",nome:$("#pNome").value.trim(),emp:$("#pEmp").value.trim(),fone:$("#pFone").value.trim(),
+  cats:CATS.filter(c=>$("#pCat-"+c.id).checked).map(c=>c.id),oferta:$("#pOferta").value.trim()};}
+function syncPart(){
+  const a=$("#partSend");if(!a)return;const p=partData();
+  a.dataset.wa="Olá! Quero ser parceiro do Injeta App.\n*Cadastro de "+PT[p.tipo]+"*\nNome: "+p.nome+(p.emp?"\nEmpresa: "+p.emp:"")+"\nWhatsApp: "+p.fone+"\nTópicos: "+p.cats.map(i=>CAT[i].nome).join(", ")+(p.oferta?"\nO que ofereço: "+p.oferta:"");
+  paintWa();
+}
+function validateSend(t){
+  const lead=t.id==="leadSend",err=$(lead?"#lErr":"#pErr");let bad="",p=null;
+  if(lead){if($("#lNome").value.trim().length<2)bad="Informe seu nome.";else if(!$("#lOk").checked)bad="Marque a caixa de autorização para continuar.";}
+  else{p=partData();bad=p.nome.length<2?"Informe seu nome.":p.fone.replace(/\D/g,"").length<10?"Informe seu WhatsApp com DDD, com pelo menos 10 dígitos.":!p.cats.length?"Marque pelo menos um tópico que você atende.":!$("#pOk").checked?"Marque a caixa de autorização para continuar.":"";}
+  if(!bad&&!t.getAttribute("href"))bad="O WhatsApp da central ainda não foi definido.";
+  err.textContent=bad;err.hidden=!bad;
+  if(bad)return false;
+  if(lead){lsSet({nome:$("#lNome").value.trim(),emp:$("#lEmp").value.trim()});setTimeout(closeSheet,500);}
+  
+  toast("Abrindo o WhatsApp. Envie a mensagem para concluir.");
+  return true;
+}
+function ownerBoxHtml(){
+  if(!S.owner)return "";
+  return `<section><div class="sec-head"><h2>Parceiros cadastrados</h2></div><p class="page-sub" style="margin-bottom:12px">Só você vê esta lista. Ela guarda os cadastros de quem tem acesso de contribuidor ao app; os demais chegam só pelo WhatsApp.</p><div class="plist">${S.parceiros.length?S.parceiros.map(p=>`<div class="pcard"><b>${esc(str(p.nome,60))}${p.emp?" · "+esc(str(p.emp,60)):""}</b><span>${esc(PT[p.tipo]||"")} · ${esc(str(p.fone,20))}</span><small>${esc((Array.isArray(p.cats)?p.cats:[]).filter(i=>CAT[i]).map(i=>CAT[i].nome).join(", "))}</small>${p.oferta?`<small>${esc(str(p.oferta,400))}</small>`:""}</div>`).join(""):`<div class="empty"><b>Nenhum cadastro ainda</b>Quando um parceiro se cadastrar pelo app, ele aparece aqui.</div>`}</div></section>`;
+}
+function vParceiro(){
+  return `<div class="wrap"><h1 class="page-title">Seja parceiro</h1>
+  <p class="page-sub">É fornecedor, ferramentaria, profissional ou vende EPIs? Cadastre-se e a central indica você quando alguém precisar.</p>
+  <form class="form" id="fPart" novalidate>
+   <fieldset class="field"><legend>Você é</legend><div class="seg">${Object.entries(PT).map(([k,v],i)=>`<label><input type="radio" name="ptipo" id="ptipo-${k}" value="${k}" ${i?"":"checked"}><span>${v}</span></label>`).join("")}</div></fieldset>
+   <div class="field"><label for="pNome">Seu nome</label><input id="pNome" maxlength="60" autocomplete="name"></div>
+   <div class="field"><label for="pEmp">Empresa (opcional)</label><input id="pEmp" maxlength="60" autocomplete="organization"></div>
+   <div class="field"><label for="pFone">WhatsApp com DDD</label><input id="pFone" inputmode="tel" maxlength="20" autocomplete="tel" placeholder="(11) 90000-0000"></div>
+   <fieldset class="field"><legend>Tópicos que você atende</legend><div class="checks">${CATS.map(c=>`<label><input type="checkbox" id="pCat-${c.id}"><span>${c.nome}</span></label>`).join("")}</div></fieldset>
+   <div class="field"><label for="pOferta">O que você oferece</label><textarea id="pOferta" maxlength="400" placeholder="Produtos, serviços, experiência, região de atendimento"></textarea></div>
+   <label class="consent"><input type="checkbox" id="pOk"><span>Li a <button type="button" class="linklike" data-go="privacidade">Política de Privacidade</button> e os <button type="button" class="linklike" data-go="termos">Termos de Uso</button>. Autorizo a central a guardar meus dados e a repassá-los a interessados nos tópicos que marquei.</span></label>
+   <p class="err" id="pErr" hidden></p>
+   <a class="btn green" id="partSend" data-wa="" target="_blank" rel="noopener">Enviar cadastro pelo WhatsApp</a>
+   <span class="hint">Seus dados vão só para a central. Eles não aparecem no app.</span>
+  </form><div id="ownerBox">${ownerBoxHtml()}</div></div>`;
+}
+document.addEventListener("input",e=>{if(e.target.closest("#fLead"))syncLead();else if(e.target.closest("#fPart"))syncPart();});
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closeSheet();});
+function respHtml(){
+  const r=[RESP.nome&&esc(RESP.nome),RESP.doc&&"CNPJ/CPF "+esc(RESP.doc)].filter(Boolean).join(", ");
+  return (r?r+". ":"")+"Contato: WhatsApp "+esc(S.central.fone)+(RESP.email?" ou e-mail "+esc(RESP.email):"")+".";
+}
+function vPrivacidade(){
+  return `<div class="wrap legal"><h1 class="page-title">Política de Privacidade</h1><p class="meta">Em vigor desde ${VIGENCIA}.</p>
+  <p>Esta política explica como o Injeta App trata dados pessoais, conforme a Lei Geral de Proteção de Dados (Lei nº 13.709/2018).</p>
+  <h2>Quem é o responsável</h2><p>O controlador dos dados é a central do Injeta App. ${respHtml()} Este também é o canal do encarregado pelo tratamento de dados.</p>
+  <h2>Quais dados tratamos</h2><ul>
+   <li><b>Pedidos de contato:</b> nome, empresa (se informada) e os detalhes que você escrever sobre o que precisa ou oferece.</li>
+   <li><b>Cadastro de parceiro:</b> nome, empresa, número de WhatsApp, tipo de atuação, tópicos atendidos e a descrição do que oferece.</li>
+   <li><b>Conversa no WhatsApp:</b> seu número e as mensagens que você enviar à central.</li></ul>
+  <p>Não pedimos documentos, dados bancários nem dados sensíveis. Não escreva esse tipo de informação nos campos de texto.</p>
+  <h2>Para que usamos</h2><p>Usamos os dados somente para entender seu pedido e colocar você em contato com empresas, fornecedores, clientes ou profissionais do setor de injeção de plásticos. Não vendemos dados e não enviamos publicidade de terceiros.</p>
+  <h2>Base legal</h2><p>O tratamento se apoia no seu consentimento, dado ao marcar a caixa de autorização antes do envio, e nas providências preliminares a um contrato que você mesmo solicita (art. 7º, I e V, da LGPD).</p>
+  <h2>Com quem compartilhamos</h2><ul>
+   <li>Com a outra parte da conexão que você pediu: por exemplo, o fornecedor indicado para o seu pedido ou o cliente interessado no seu serviço.</li>
+   <li>Com o WhatsApp, serviço da Meta, por onde a conversa acontece e que segue a própria política de privacidade.</li>
+   <li>Com autoridades, quando houver obrigação legal ou ordem judicial.</li></ul>
+  <h2>Onde os dados ficam</h2><ul>
+   <li>Seu nome e sua empresa ficam salvos no seu próprio aparelho, apenas para preencher o próximo pedido mais rápido. Limpar os dados do navegador apaga essa informação.</li>
+   <li>Os cadastros de parceiro chegam à central pelo WhatsApp e podem ser anotados em uma lista interna, vista somente pela central.</li>
+   <li>As mensagens ficam no WhatsApp da central.</li></ul>
+  <p>O app não usa cookies de publicidade nem ferramentas de rastreamento.</p>
+  <p>O site fica hospedado em serviços de terceiros (hospedagem e fontes de texto), que podem registrar dados técnicos de acesso, como o endereço IP.</p>
+  <h2>Por quanto tempo</h2><p>Guardamos os dados enquanto durar o atendimento ou a parceria. Depois disso, eles são apagados, salvo quando a lei exigir a guarda. Você pode pedir a exclusão a qualquer momento.</p>
+  <h2>Seus direitos</h2><p>Você pode pedir, sem custo: confirmação de que tratamos seus dados, acesso, correção, exclusão, portabilidade, informação sobre com quem foram compartilhados e a revogação do consentimento (art. 18 da LGPD). Faça o pedido pelo WhatsApp da central. Você também pode reclamar à Autoridade Nacional de Proteção de Dados (ANPD).</p>
+  <h2>Menores de idade</h2><p>O app é voltado a empresas e profissionais. Não se destina a menores de 18 anos.</p>
+  <h2>Alterações</h2><p>Esta política pode ser atualizada. A data no topo indica a versão em vigor.</p></div>`;
+}
+function vTermos(){
+  return `<div class="wrap legal"><h1 class="page-title">Termos de Uso</h1><p class="meta">Em vigor desde ${VIGENCIA}.</p>
+  <p>Ao usar o Injeta App, você concorda com estes termos. Se não concordar, não use o app.</p>
+  <h2>O que o app faz</h2><p>O Injeta App aproxima empresas, fornecedores, clientes e profissionais do setor de injeção de plásticos. Você informa o que precisa ou oferece e a central faz a ponte pelo WhatsApp.</p>
+  <h2>O que o app não faz</h2><ul>
+   <li>A central não é parte das negociações, não vende produtos e não presta os serviços listados.</li>
+   <li>A central não garante preço, prazo, qualidade, entrega, pagamento nem a contratação de profissionais.</li>
+   <li>Os itens do catálogo indicam áreas de atuação. Eles não são oferta nem promessa de disponibilidade.</li></ul>
+  <h2>Suas responsabilidades</h2><ul>
+   <li>Informar dados verdadeiros e manter seu contato atualizado.</li>
+   <li>Conferir a outra parte antes de fechar negócio: documentos, referências, estado de máquinas e condições de pagamento.</li>
+   <li>Cumprir as leis e normas aplicáveis ao seu negócio, inclusive fiscais, trabalhistas e de segurança do trabalho.</li></ul>
+  <h2>Usos proibidos</h2><p>Não é permitido usar o app para fraude, spam, oferta de produtos ou serviços ilegais, envio de informações falsas ou coleta de dados de outras pessoas.</p>
+  <h2>Condições comerciais</h2><p>Consultar o catálogo e enviar pedidos pelo app não tem custo. Qualquer condição comercial do serviço de intermediação é informada e combinada diretamente com a central, antes de ser cobrada.</p>
+  <h2>Propriedade intelectual</h2><p>O nome Injeta App, a identidade visual, os textos, as ilustrações e o código do app pertencem ao seu titular e são protegidos pela Lei de Direitos Autorais (Lei nº 9.610/1998), pela Lei de Software (Lei nº 9.609/1998) e pela Lei da Propriedade Industrial (Lei nº 9.279/1996). É proibido copiar, reproduzir ou imitar o app, no todo ou em parte, sem autorização por escrito.</p>
+  <h2>Responsabilidade</h2><p>Nos limites permitidos pela lei, a central não responde por perdas decorrentes de negócios feitos entre os usuários nem por indisponibilidade do app ou do WhatsApp. Nada nestes termos afasta direitos que a lei garante a você.</p>
+  <h2>Privacidade</h2><p>O tratamento de dados pessoais segue a <button type="button" class="linklike" data-go="privacidade">Política de Privacidade</button>.</p>
+  <h2>Lei aplicável</h2><p>Estes termos seguem a legislação brasileira, incluindo o Marco Civil da Internet (Lei nº 12.965/2014) e a LGPD.</p>
+  <h2>Contato</h2><p>${respHtml()}</p></div>`;
+}
+function render(){
+  const v=$("#view");
+  v.innerHTML=S.route==="buscar"?vBuscar():S.route==="parceiro"?vParceiro():S.route==="privacidade"?vPrivacidade():S.route==="termos"?vTermos():vInicio();
+  v.style.animation="none";void v.offsetWidth;v.style.animation="";
+  document.querySelectorAll(".nav [data-go],.topnav [data-go]").forEach(b=>{if(b.dataset.go===S.route)b.setAttribute("aria-current","page");else b.removeAttribute("aria-current");});
+  tabs();syncPart();paintWa();
+}
+function go(route){
+  S.route=route;closeSheet();
+  if(location.hash.slice(1)!==route){try{location.hash=route;}catch(e){}}
+  render();window.scrollTo(0,0);
+}
+function paintCentral(){const b=$("#centralBox");if(b&&!$("#fCentral"))b.innerHTML=centralInner();paintWa();}
+
+document.addEventListener("click",e=>{
+  const t=e.target.closest("button,a");if(!t){if(e.target.id==="sheetWrap")closeSheet();return;}
+  if(t.id==="sheetClose"){closeSheet();return;}
+  if(t.dataset.lead){openLead(t.dataset.lead);return;}
+  if(t.id==="leadSend"||t.id==="partSend"){if(!validateSend(t))e.preventDefault();return;}
+  if(t.matches("a[data-wa]")){if(!t.getAttribute("href")){e.preventDefault();toast("O WhatsApp da central ainda não foi definido.");}return;}
+  if(t.dataset.go){if(t.dataset.go==="buscar"){S.cat="";S.q="";}go(t.dataset.go);return;}
+  if("tab" in t.dataset){const v=t.dataset.tab;if(v==="inicio")go("inicio");else{S.cat=v==="todos"?"":v;S.q="";go("buscar");}return;}
+  if(t.id==="editCentral"){const b=$("#centralBox");if(b){b.innerHTML=centralInner(true);$("#cFone").focus();}return;}
+  if(t.dataset.copy){const fb=()=>toast("Não foi possível copiar. Toque no número e copie pelo menu do aparelho.");
+    try{navigator.clipboard.writeText(t.dataset.copy).then(()=>toast("Número copiado"),fb);}catch(err){fb();}return;}
+});
+document.addEventListener("input",e=>{if(e.target.id==="qBusca"){S.q=e.target.value;$("#lista").innerHTML=listHtml();paintWa();}});
+document.addEventListener("submit",e=>{
+  e.preventDefault();
+  const f=e.target;
+  if(f.id==="fHome"){S.q=$("#qHome").value;S.cat="";go("buscar");return;}
+  if(f.id==="fCentral"){const fone=$("#cFone").value.trim(),err=$("#cErr");
+    if(fone.replace(/\D/g,"").length<10){err.textContent="Informe o número com DDD, com pelo menos 10 dígitos.";err.hidden=false;return;}
+    if(!S.db){err.textContent="O banco de dados não está disponível nesta visualização.";err.hidden=false;return;}
+    S.central={fone};$("#centralBox").innerHTML=centralInner();paintWa();
+    S.db.doc("config/central").set({fone,atualizado:Date.now()}).then(()=>toast("WhatsApp da central salvo"),()=>toast("Não foi possível salvar o número."));}
+});
+window.addEventListener("hashchange",()=>{const h=location.hash.slice(1);if(ROUTES.includes(h)&&h!==S.route){S.route=h;render();}});
+{const h0=location.hash.slice(1);if(ROUTES.includes(h0))S.route=h0;}
+render();
+})();
+</script>
+</body>
+</html>
